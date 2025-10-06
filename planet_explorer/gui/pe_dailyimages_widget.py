@@ -56,10 +56,7 @@ LOG_VERBOSE = os.environ.get("PYTHON_LOG_VERBOSE", None)
 
 plugin_path = os.path.split(os.path.dirname(__file__))[0]
 WIDGET, BASE = uic.loadUiType(
-    os.path.join(plugin_path, "ui", "dailyimages_widget.ui"),
-    from_imports=True,
-    import_from=os.path.basename(plugin_path),
-    resource_suffix="",
+    os.path.join(plugin_path, "ui", "dailyimages_widget.ui")
 )
 
 SEARCH_HIGHLIGHT = "QToolButton {color: rgb(16, 131, 138);}"
@@ -406,7 +403,7 @@ class DailyImagesWidget(BASE, WIDGET):
         dlg.setMinimumWidth(700)
         dlg.setMinimumHeight(750)
 
-        dlg.exec_()
+        dlg.exec()
 
     @pyqtSlot()
     def copy_checked_ids(self):
@@ -428,7 +425,7 @@ class DailyImagesWidget(BASE, WIDGET):
         if self.searchResultsWidget.search_has_been_performed():
             request = self.searchResultsWidget.request_query()
             dlg = ShowCurlDialog(request)
-            dlg.exec_()
+            dlg.exec()
         else:
             self.parent.show_message("No search has been performed", level=Qgis.Warning)
 

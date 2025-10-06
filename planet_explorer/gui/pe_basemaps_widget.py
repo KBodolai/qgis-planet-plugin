@@ -82,10 +82,7 @@ PLACEHOLDER_THUMB = ":/plugins/planet_explorer/thumb-placeholder-128.svg"
 
 plugin_path = os.path.split(os.path.dirname(__file__))[0]
 WIDGET, BASE = uic.loadUiType(
-    os.path.join(plugin_path, "ui", "basemaps_widget.ui"),
-    from_imports=True,
-    import_from=os.path.basename(plugin_path),
-    resource_suffix="",
+    os.path.join(plugin_path, "ui", "basemaps_widget.ui")
 )
 
 
@@ -415,13 +412,20 @@ class BasemapsWidget(BASE, WIDGET):
 
     def explore(self):
         if self._check_has_items_checked():
-            selected = self.mosaicsList.selected_mosaics()
+            try:
+                selected = self.mosaicsList.selected_mosaics()
 
-            analytics_track(BASEMAP_SERVICE_ADDED_TO_MAP)
+                analytics_track(BASEMAP_SERVICE_ADDED_TO_MAP)
 
-            add_mosaics_to_qgis_project(
-                selected, self.comboSeriesName.currentText() or selected[0][NAME]
-            )
+                add_mosaics_to_qgis_project(
+                    selected, self.comboSeriesName.currentText() or selected[0][NAME]
+                )
+            except Exception as e:
+                QMessageBox.critical(
+                    self,
+                    "Error",
+                    f"An error occurred while exploring selected basemaps: {str(e)}"
+                )
 
     def order(self):
         if self._check_has_items_checked():
@@ -451,7 +455,7 @@ class BasemapsWidget(BASE, WIDGET):
                     f"The download will contain more than {MAX_QUADS_TO_DOWNLOAD}"
                     " quads.\nAre your sure you want to proceed?",
                 )
-                if ret != QMessageBox.Yes:
+                if ret != QMessageBox.StandardButton.Yes:
                     return
             self.show_order_name_page()
         elif self.radioDownloadAOI.isChecked():
@@ -571,7 +575,7 @@ class BasemapsWidget(BASE, WIDGET):
                 f"The download will contain more than {MAX_QUADS_TO_DOWNLOAD} quads.\n"
                 "Are your sure you want to proceed?",
             )
-            if ret != QMessageBox.Yes:
+            if ret != QMessageBox.StandardButton.Yes:
                 return
         if selected:
             self.show_order_name_page()
@@ -595,7 +599,7 @@ class BasemapsWidget(BASE, WIDGET):
         self.labelStreamingOrderDescription.setText(description)
         pixmap = QPixmap(PLACEHOLDER_THUMB, "SVG")
         thumb = pixmap.scaled(
-            48, 48, QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation
+            48, 48, QtCore.Qt.AspectRatioMode.KeepAspectRatio, QtCore.Qt.TransformationMode.SmoothTransformation
         )
         self.labelStreamingOrderIcon.setPixmap(thumb)
         if THUMB in selected[0][LINKS]:
@@ -660,7 +664,7 @@ class BasemapsWidget(BASE, WIDGET):
 
         pixmap = QPixmap(PLACEHOLDER_THUMB, "SVG")
         thumb = pixmap.scaled(
-            48, 48, QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation
+            48, 48, QtCore.Qt.AspectRatioMode.KeepAspectRatio, QtCore.Qt.TransformationMode.SmoothTransformation
         )
         self.labelOrderIcon.setPixmap(thumb)
         if THUMB in selected[0][LINKS]:
@@ -691,7 +695,7 @@ class BasemapsWidget(BASE, WIDGET):
         img.loadFromData(reply.readAll())
         pixmap = QPixmap(img)
         thumb = pixmap.scaled(
-            48, 48, QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation
+            48, 48, QtCore.Qt.AspectRatioMode.KeepAspectRatio, QtCore.Qt.TransformationMode.SmoothTransformation
         )
         if self.radioStreaming.isChecked():
             self.labelStreamingOrderIcon.setPixmap(thumb)

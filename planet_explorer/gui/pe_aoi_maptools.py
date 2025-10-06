@@ -71,7 +71,7 @@ class PlanetExtentMapTool(QgsMapTool):
         self.rubber_band.setWidth(1)
 
     def canvasMoveEvent(self, event):
-        if event.buttons() != Qt.LeftButton:
+        if event.buttons() != Qt.MouseButton.LeftButton:
             return
 
         if not self.dragging:
@@ -147,7 +147,7 @@ class PlanetCircleMapTool(QgsMapTool):
         self.rubber_band.setWidth(1)
 
     def canvasMoveEvent(self, event):
-        if event.buttons() != Qt.LeftButton:
+        if event.buttons() != Qt.MouseButton.LeftButton:
             return
 
         if not self.dragging:
@@ -208,7 +208,7 @@ class PlanetPolyMapTool(QgsMapTool):
         self.vertex_count = 1  # two points are dropped initially
 
     def canvasReleaseEvent(self, event):
-        if event.button() == Qt.RightButton:
+        if event.button() == Qt.MouseButton.RightButton:
             if self.rubber_band is None or self.extent is None:
                 return
             # TODO: validate geom before firing signal
@@ -219,7 +219,7 @@ class PlanetPolyMapTool(QgsMapTool):
             self.rubber_band = None
             self.vertex_count = 1  # two points are dropped initially
             return
-        elif event.button() == Qt.LeftButton:
+        elif event.button() == Qt.MouseButton.LeftButton:
             if self.rubber_band is None:
                 self.rubber_band = QgsRubberBand(
                     self.canvas, QgsWkbTypes.PolygonGeometry

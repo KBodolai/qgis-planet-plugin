@@ -57,10 +57,7 @@ LOG_VERBOSE = os.environ.get("PYTHON_LOG_VERBOSE", None)
 
 plugin_path = os.path.split(os.path.dirname(__file__))[0]
 WIDGET, BASE = uic.loadUiType(
-    os.path.join(plugin_path, "ui", "pe_explorer_dockwidget.ui"),
-    from_imports=True,
-    import_from=f"{os.path.basename(plugin_path)}",
-    resource_suffix="",
+    os.path.join(plugin_path, "ui", "pe_explorer_dockwidget.ui")
 )
 
 LOG_NAME = "PlanetExplorer"
@@ -102,7 +99,7 @@ class PlanetExplorerDockWidget(BASE, WIDGET):
 
         self.leUser.addAction(
             QIcon(":/plugins/planet_explorer/envelope-gray.svg"),
-            QLineEdit.LeadingPosition,
+            QLineEdit.ActionPosition.LeadingPosition,
         )
 
         self.lblSignUp.linkActivated[str].connect(
@@ -115,9 +112,9 @@ class PlanetExplorerDockWidget(BASE, WIDGET):
             lambda: open_link_with_browser(FORGOT_PASS_URL)
         )
 
-        self.btn_ok = self.buttonBoxLogin.button(QDialogButtonBox.Ok)
+        self.btn_ok = self.buttonBoxLogin.button(QDialogButtonBox.StandardButton.Ok)
         self.btn_ok.setText("Sign In")
-        self.btn_api_key = self.buttonBoxLogin.button(QDialogButtonBox.Abort)
+        self.btn_api_key = self.buttonBoxLogin.button(QDialogButtonBox.StandardButton.Abort)
         self.btn_api_key.setText("Use API key")
         self.btn_api_key.hide()
         self.buttonBoxLogin.accepted.connect(self.login)
@@ -332,10 +329,10 @@ def _get_widget_instance():
     if dockwidget_instance is None:
         dockwidget_instance = PlanetExplorerDockWidget(parent=iface.mainWindow())
         dockwidget_instance.setAllowedAreas(
-            Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea
+            Qt.DockWidgetArea.LeftDockWidgetArea | Qt.DockWidgetArea.RightDockWidgetArea
         )
 
-        iface.addDockWidget(Qt.RightDockWidgetArea, dockwidget_instance)
+        iface.addDockWidget(Qt.DockWidgetArea.RightDockWidgetArea, dockwidget_instance)
 
         dockwidget_instance.hide()
     return dockwidget_instance

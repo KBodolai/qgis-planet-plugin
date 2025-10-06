@@ -67,16 +67,16 @@ from qgis.PyQt.QtWidgets import (
 )
 
 # Initialize Qt resources from file resources.py
-from planet_explorer.resources import resources  # noqa: F401
+from .resources import resources  # noqa: F401
 
-from planet_explorer.gui.pe_explorer_dockwidget import (
+from .gui.pe_explorer_dockwidget import (
     show_explorer,
     remove_explorer,
     toggle_mosaics_search,
     toggle_images_search,
 )
 
-from planet_explorer.pe_utils import (
+from .pe_utils import (
     add_menu_section_action,
     BASE_URL,
     open_link_with_browser,
@@ -85,32 +85,32 @@ from planet_explorer.pe_utils import (
     plugin_version,
 )
 
-from planet_explorer.pe_analytics import (
+from .pe_analytics import (
     sentry_dsn,
     is_sentry_dsn_valid,
     is_segments_write_key_valid,
     segments_write_key,
 )
 
-from planet_explorer.planet_api import PlanetClient
+from .planet_api import PlanetClient
 
-from planet_explorer.gui.pe_basemap_layer_widget import BasemapLayerWidgetProvider
+from .gui.pe_basemap_layer_widget import BasemapLayerWidgetProvider
 
-from planet_explorer.gui.pe_settings_dialog import SettingsDialog
+from .gui.pe_settings_dialog import SettingsDialog
 
-from planet_explorer.gui.pe_orders_monitor_dockwidget import (
+from .gui.pe_orders_monitor_dockwidget import (
     toggle_orders_monitor,
     hide_orders_monitor,
     remove_orders_monitor,
 )
 
-from planet_explorer.gui.pe_planet_inspector_dockwidget import (
+from .gui.pe_planet_inspector_dockwidget import (
     toggle_inspector,
     hide_inspector,
     remove_inspector,
 )
 
-from planet_explorer.gui.pe_tasking_dockwidget import (
+from .gui.pe_tasking_dockwidget import (
     toggle_tasking_widget,
     remove_tasking_widget,
 )
@@ -420,16 +420,16 @@ class PlanetExplorer(object):
 
     def add_central_toolbar_button(self):
         widget = QWidget()
-        widget.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
+        widget.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
         layout = QHBoxLayout()
         layout.addStretch()
         self.btnLogin = QPushButton()
         palette = self.btnLogin.palette()
-        palette.setColor(QPalette.Button, PLANET_COLOR)
+        palette.setColor(QPalette.ColorRole.Button, PLANET_COLOR)
         self.btnLogin.setPalette(palette)
         self.btnLogin.setText("Log in")
         # self.btnLogin.setAutoRaise(True)
-        self.btnLogin.setAttribute(Qt.WA_TranslucentBackground)
+        self.btnLogin.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
         self.btnLogin.clicked.connect(self.btn_login_clicked)
         icon = QIcon(os.path.join(plugin_path, "resources", "planet-logo-p.svg"))
         labelIcon = QLabel()
@@ -530,7 +530,7 @@ class PlanetExplorer(object):
         )
         btn.setMenu(info_menu)
 
-        btn.setPopupMode(QToolButton.MenuButtonPopup)
+        btn.setPopupMode(QToolButton.ToolButtonPopupMode.MenuButtonPopup)
         # Also show menu on click, to keep disclosure triangle visible
         btn.clicked.connect(btn.showMenu)
 
@@ -550,7 +550,7 @@ class PlanetExplorer(object):
         user_menu.addAction(self.logout_act)
 
         self.user_button = QToolButton()
-        self.user_button.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
+        self.user_button.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
         self.user_button.setIcon(
             QIcon(
                 os.path.join(plugin_path, "resources", "account.svg"),
@@ -558,7 +558,7 @@ class PlanetExplorer(object):
         )
         self.user_button.setMenu(user_menu)
 
-        self.user_button.setPopupMode(QToolButton.MenuButtonPopup)
+        self.user_button.setPopupMode(QToolButton.ToolButtonPopupMode.MenuButtonPopup)
         # Also show menu on click, to keep disclosure triangle visible
         self.user_button.clicked.connect(self.user_button.showMenu)
 
@@ -608,7 +608,7 @@ class PlanetExplorer(object):
             self._terms_browser.setSource(
                 QUrl("qrc:/plugins/planet_explorer/terms.html")
             )
-            self._terms_browser.setWindowModality(Qt.ApplicationModal)
+            self._terms_browser.setWindowModality(Qt.WindowModality.ApplicationModal)
         self._terms_browser.show()
 
     def login(self):

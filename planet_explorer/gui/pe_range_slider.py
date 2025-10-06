@@ -28,7 +28,7 @@ import sys
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import pyqtSignal, pyqtSlot
 from qgis.PyQt.QtGui import QFont
-from qgis.PyQt.QtWidgets import QLabel, QStyleFactory
+from qgis.PyQt.QtWidgets import QLabel, QSlider, QStyleFactory
 
 LOG_LEVEL = os.environ.get("PYTHON_LOG_LEVEL", "WARNING").upper()
 logging.basicConfig(level=LOG_LEVEL)
@@ -44,10 +44,7 @@ except ModuleNotFoundError:
     from range_slider import RangeSlider
 
 SLIDER_WIDGET, SLIDER_BASE = uic.loadUiType(
-    os.path.join(plugin_path, "ui", "pe_range_slider_base.ui"),
-    from_imports=True,
-    import_from=f"{os.path.basename(plugin_path)}",
-    resource_suffix="",
+    os.path.join(plugin_path, "ui", "pe_range_slider_base.ui")
 )
 
 
@@ -152,7 +149,7 @@ class PlanetExplorerRangeSlider(SLIDER_BASE, SLIDER_WIDGET):
 
         # This makes the slider look OK (and like Planet Explorer web app's)
         #   across multiple platforms
-        self.rangeSlider.setTickPosition(self.rangeSlider.TicksBelow)
+        self.rangeSlider.setTickPosition(QSlider.TickPosition.TicksBelow)
         self.rangeSlider.setTickInterval(
             int((self.rangeSlider.maximum() - self.rangeSlider.minimum()) / 2)
         )
@@ -280,4 +277,4 @@ if __name__ == "__main__":
     # layout.setMargin(0)
 
     dlg.show()
-    app.exec_()
+    app.exec()

@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 """
-***************************************************************************
+****************************WIWIDGET, BASE = uic.loadUiType(
+    os.path.join(plugin_path, "ui", "pe_tasking_dockwidget.ui")
+)BASE = uic.loadUiType(
+    os.path.join(plugin_path, "ui", "pe_tasking_dockwidget.ui")
+)*****************************************
     pe_orders_monitor_dialog.py
     ---------------------
     Date                 : September 2019
@@ -55,10 +59,7 @@ log = logging.getLogger(__name__)
 LOG_VERBOSE = os.environ.get("PYTHON_LOG_VERBOSE", None)
 
 WIDGET, BASE = uic.loadUiType(
-    os.path.join(plugin_path, "ui", "pe_tasking_dockwidget.ui"),
-    from_imports=True,
-    import_from=os.path.basename(plugin_path),
-    resource_suffix="",
+    os.path.join(plugin_path, "ui", "pe_tasking_dockwidget.ui")
 )
 
 
@@ -70,7 +71,7 @@ class AOICaptureMapTool(QgsMapTool):
         QgsMapTool.__init__(self, canvas)
 
         self.canvas = canvas
-        self.cursor = Qt.CrossCursor
+        self.cursor = Qt.CursorShape.CrossCursor
 
     def activate(self):
         self.canvas.setCursor(self.cursor)
@@ -155,7 +156,7 @@ class TaskingDockWidget(BASE, WIDGET):
         self.prev_map_tool = None
 
         self.btnMapTool.setIcon(TASKING_ICON)
-        self.btnMapTool.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
+        self.btnMapTool.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
 
         self.footprint = QgsRubberBand(iface.mapCanvas(), QgsWkbTypes.PolygonGeometry)
         self.footprint.setStrokeColor(PLANET_COLOR)
@@ -243,10 +244,10 @@ def _get_widget_instance():
             return None
         dockwidget_instance = TaskingDockWidget(parent=iface.mainWindow())
         dockwidget_instance.setAllowedAreas(
-            Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea
+            Qt.DockWidgetArea.LeftDockWidgetArea | Qt.DockWidgetArea.RightDockWidgetArea
         )
 
-        iface.addDockWidget(Qt.LeftDockWidgetArea, dockwidget_instance)
+        iface.addDockWidget(Qt.DockWidgetArea.LeftDockWidgetArea, dockwidget_instance)
 
         dockwidget_instance.hide()
     return dockwidget_instance

@@ -27,6 +27,7 @@ from qgis.PyQt import QtCore
 from qgis.PyQt.QtCore import Qt, pyqtSignal
 from qgis.PyQt.QtGui import QPixmap
 from qgis.PyQt.QtWidgets import (
+    QAbstractItemView,
     QCheckBox,
     QFrame,
     QHBoxLayout,
@@ -69,7 +70,7 @@ class QuadsTreeWidget(QTreeWidget):
         self.setAutoScroll(True)
         self.setMouseTracking(True)
         self.setAlternatingRowColors(True)
-        self.setSelectionMode(self.NoSelection)
+        self.setSelectionMode(QAbstractItemView.SelectionMode.NoSelection)
         self.widgets = {}
         self._updating = False
 
@@ -211,13 +212,13 @@ class ParentTreeItemWidget(QFrame):
         self.checkBox.blockSignals(True)
         if selected == total:
             self.checkBox.setTristate(False)
-            self.checkBox.setCheckState(Qt.Checked)
+            self.checkBox.setCheckState(Qt.CheckState.Checked)
         elif selected == 0:
             self.checkBox.setTristate(False)
-            self.checkBox.setCheckState(Qt.Unchecked)
+            self.checkBox.setCheckState(Qt.CheckState.Unchecked)
         else:
             self.checkBox.setTristate(True)
-            self.checkBox.setCheckState(Qt.PartiallyChecked)
+            self.checkBox.setCheckState(Qt.CheckState.PartiallyChecked)
         self.checkBox.blockSignals(False)
 
 
@@ -242,7 +243,7 @@ class QuadInstanceItemWidget(QFrame):
         self.iconLabel = QLabel()
         pixmap = QPixmap(PLACEHOLDER_THUMB, "SVG")
         thumb = pixmap.scaled(
-            48, 48, QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation
+            48, 48, QtCore.Qt.AspectRatioMode.KeepAspectRatio, QtCore.Qt.TransformationMode.SmoothTransformation
         )
         self.iconLabel.setPixmap(thumb)
         self.checkBox = QCheckBox("")
@@ -282,7 +283,7 @@ class QuadInstanceItemWidget(QFrame):
 
     def set_thumbnail(self, img):
         pixmap = QPixmap(img)
-        thumb = pixmap.scaled(48, 48, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+        thumb = pixmap.scaled(48, 48, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation)
         self.iconLabel.setPixmap(thumb)
         self.iconLabel.setStyleSheet("")
 
@@ -302,16 +303,16 @@ class QuadInstanceItemWidget(QFrame):
         self.footprintfill.reset(QgsWkbTypes.PolygonGeometry)
 
     def show_solid_interior(self):
-        self.footprintfill.setBrushStyle(Qt.SolidPattern)
+        self.footprintfill.setBrushStyle(Qt.BrushStyle.SolidPattern)
         self.footprintfill.updateCanvas()
 
     def hide_solid_interior(self):
-        self.footprintfill.setBrushStyle(Qt.NoBrush)
+        self.footprintfill.setBrushStyle(Qt.BrushStyle.NoBrush)
         self.footprintfill.updateCanvas()
 
     def update_footprint_brush(self):
         self.footprint.setBrushStyle(
-            Qt.BDiagPattern if self.checkBox.isChecked() else Qt.NoBrush
+            Qt.BrushStyle.BDiagPattern if self.checkBox.isChecked() else Qt.BrushStyle.NoBrush
         )
         self.footprint.updateCanvas()
 

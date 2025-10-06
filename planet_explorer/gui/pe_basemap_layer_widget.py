@@ -73,13 +73,13 @@ class CustomSlider(QSlider):
         self.initStyleOption(opt)
 
         groove_rect = style.subControlRect(
-            style.CC_Slider, opt, QStyle.SC_SliderGroove, self
+            QStyle.ComplexControl.CC_Slider, opt, QStyle.SubControl.SC_SliderGroove, self
         )
         handle_rect = style.subControlRect(
-            style.CC_Slider, opt, QStyle.SC_SliderHandle, self
+            QStyle.ComplexControl.CC_Slider, opt, QStyle.SubControl.SC_SliderHandle, self
         )
 
-        slider_space = style.pixelMetric(style.PM_SliderSpaceAvailable, opt)
+        slider_space = style.pixelMetric(QStyle.PixelMetric.PM_SliderSpaceAvailable, opt)
         range_x = style.sliderPositionFromValue(
             self.minimum(), self.maximum(), self.value(), slider_space
         )
@@ -104,7 +104,7 @@ class CustomSlider(QSlider):
             cur_brush = painter.brush()
             cur_pen = painter.pen()
             painter.setBrush(QBrush(QColor(169, 169, 169)))
-            painter.setPen(Qt.NoPen)
+            painter.setPen(Qt.PenStyle.NoPen)
             # painter.drawRect(groove_rect)
             painter.drawRoundedRect(
                 groove_rect, groove_rect.height() / 2, groove_rect.height() / 2
@@ -115,7 +115,7 @@ class CustomSlider(QSlider):
         cur_brush = painter.brush()
         cur_pen = painter.pen()
         painter.setBrush(QBrush(QColor(18, 141, 148)))
-        painter.setPen(Qt.NoPen)
+        painter.setPen(Qt.PenStyle.NoPen)
         painter.drawRect(range_rect)
         painter.setBrush(cur_brush)
         painter.setPen(cur_pen)
@@ -123,21 +123,21 @@ class CustomSlider(QSlider):
         opt = QStyleOptionSlider()
         self.initStyleOption(opt)
 
-        opt.subControls = QStyle.SC_SliderHandle
+        opt.subControls = QStyle.SubControl.SC_SliderHandle
 
-        if self.tickPosition() != self.NoTicks:
-            opt.subControls |= QStyle.SC_SliderTickmarks
+        if self.tickPosition() != QSlider.TickPosition.NoTicks:
+            opt.subControls |= QStyle.SubControl.SC_SliderTickmarks
 
         if self.isSliderDown():
-            opt.state |= QStyle.State_Sunken
+            opt.state |= QStyle.StateFlag.State_Sunken
         else:
-            opt.state |= QStyle.State_Active
+            opt.state |= QStyle.StateFlag.State_Active
 
-        opt.activeSubControls = QStyle.SC_None
+        opt.activeSubControls = QStyle.SubControl.SC_None
 
         opt.sliderPosition = self.value()
         opt.sliderValue = self.value()
-        style.drawComplexControl(QStyle.CC_Slider, opt, painter, self)
+        style.drawComplexControl(QStyle.ComplexControl.CC_Slider, opt, painter, self)
 
 
 class BasemapRenderingOptionsWidget(QFrame):
@@ -199,7 +199,7 @@ class BasemapRenderingOptionsWidget(QFrame):
                     icon = self.ramp_pixmaps[name]
                     self.comboRamp.addItem(name)
                     self.comboRamp.setItemData(
-                        self.comboRamp.count() - 1, icon, Qt.DecorationRole
+                        self.comboRamp.count() - 1, icon, Qt.ItemDataRole.DecorationRole
                     )
                 self.comboRamp.setCurrentText(default)
                 if len(ramps) != len(list(self.ramps["colors"].keys())):
@@ -208,7 +208,7 @@ class BasemapRenderingOptionsWidget(QFrame):
                     label = QLabel(
                         "<a href='#' style='color: grey;'>Show all ramps</a>"
                     )
-                    label.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
+                    label.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
                     label.linkActivated.connect(self._show_all_ramps)
                     self.listWidget.setItemWidget(item, label)
             else:
@@ -226,7 +226,7 @@ class BasemapRenderingOptionsWidget(QFrame):
             icon = self.ramp_pixmaps[name]
             self.comboRamp.addItem(name)
             self.comboRamp.setItemData(
-                self.comboRamp.count() - 1, icon, Qt.DecorationRole
+                self.comboRamp.count() - 1, icon, Qt.ItemDataRole.DecorationRole
             )
         self.comboRamp.showPopup()
 
@@ -307,10 +307,10 @@ class BasemapLayerWidget(QWidget):
                 )
                 self.layout.addWidget(self.labelId)
                 self.labelName = QLabel(current_mosaic_name)
-                self.slider = CustomSlider(Qt.Horizontal)
+                self.slider = CustomSlider(Qt.Orientation.Horizontal)
                 self.slider.setRange(0, len(self.mosaics) - 1)
                 self.slider.setTickInterval(1)
-                self.slider.setTickPosition(QSlider.TicksAbove)
+                self.slider.setTickPosition(QSlider.TickPosition.TicksAbove)
                 self.slider.setPageStep(1)
                 self.slider.setTracking(True)
                 self.slider.setEnabled(True)
@@ -471,9 +471,17 @@ class BasemapLayerWidgetProvider(QgsLayerTreeEmbeddedWidgetProvider):
         return "Planet Basemap Layer Widget"
 
     def createWidget(self, layer, widgetIndex):
-        widget = BasemapLayerWidget(layer)
-        self.widgets[layer.id()] = widget
-        return self.widgets[layer.id()]
+        try:
+            widget = BasemapLayerWidget(layer)
+            self.widgets[layer.id()] = widget
+            return self.widgets[layer.id()]
+        except Exception as e:
+            QgsMessageLog.logMessage(
+                f"Error creating Planet basemap layer widget: {str(e)}",
+                QGIS_LOG_SECTION_NAME,
+                Qgis.Critical
+            )
+            return None
 
     def supportsLayer(self, layer):
         return PLANET_CURRENT_MOSAIC in layer.customPropertyKeys()

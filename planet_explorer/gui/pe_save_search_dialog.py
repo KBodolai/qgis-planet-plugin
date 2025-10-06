@@ -28,11 +28,11 @@ class SaveSearchDialog(BASE, WIDGET):
         self.setupUi(self)
 
         self.bar = QgsMessageBar()
-        self.bar.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
+        self.bar.setSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
         self.layout().addWidget(self.bar)
 
-        self.buttonBox.button(QDialogButtonBox.Save).clicked.connect(self.save)
-        self.buttonBox.button(QDialogButtonBox.Cancel).clicked.connect(self.reject)
+        self.buttonBox.button(QDialogButtonBox.StandardButton.Save).clicked.connect(self.save)
+        self.buttonBox.button(QDialogButtonBox.StandardButton.Cancel).clicked.connect(self.reject)
 
         self.btnCreateFolder.clicked.connect(self.createFolder)
 
@@ -89,7 +89,7 @@ class SaveSearchDialog(BASE, WIDGET):
             gte = filters[0]["config"].get("gte")
             if gte is not None:
                 self.lblStartDate.setText(
-                    QDateTime.fromString(gte, Qt.ISODate).date().toString()
+                    QDateTime.fromString(gte, Qt.DateFormat.ISODate).date().toString()
                 )
             else:
                 self.lblStartDate.setText("---")
@@ -97,7 +97,7 @@ class SaveSearchDialog(BASE, WIDGET):
             lte = filters[0]["config"].get("lte")
             if lte is not None:
                 self.lblEndDate.setText(
-                    QDateTime.fromString(lte, Qt.ISODate).date().toString()
+                    QDateTime.fromString(lte, Qt.DateFormat.ISODate).date().toString()
                 )
             else:
                 self.lblEndDate.setText("---")
