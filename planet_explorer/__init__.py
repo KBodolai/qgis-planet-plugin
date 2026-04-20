@@ -33,6 +33,6 @@ if os.path.exists(extlibs) and extlibs not in sys.path:
 
 # noinspection PyPep8Naming
 def classFactory(iface):
-    from planet_explorer.pe_plugin import PlanetExplorer
+    from .pe_plugin import PlanetExplorer
 
     return PlanetExplorer(iface)

@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-***************************************************************************
+*******************************************************ORDERS_MONITOR_WIDGET, ORDERS_MONITOR_BASE = uic.loadUiType(
+    os.path.join(plugin_path, "ui", "pe_orders_monitor_dockwidget.ui")
+)**************
     pe_orders_monitor_dialog.py
     ---------------------
     Date                 : September 2019
@@ -82,10 +84,7 @@ LOG_VERBOSE = os.environ.get("PYTHON_LOG_VERBOSE", None)
 
 
 ORDERS_MONITOR_WIDGET, ORDERS_MONITOR_BASE = uic.loadUiType(
-    os.path.join(plugin_path, "ui", "pe_orders_monitor_dockwidget.ui"),
-    from_imports=True,
-    import_from=os.path.basename(plugin_path),
-    resource_suffix="",
+    os.path.join(plugin_path, "ui", "pe_orders_monitor_dockwidget.ui")
 )
 
 
@@ -139,7 +138,7 @@ class PlanetOrdersMonitorDockWidget(ORDERS_MONITOR_BASE, ORDERS_MONITOR_WIDGET):
             self.listOrders.addItem(item)
             self.listOrders.setItemWidget(item, widget)
 
-        self.listOrders.sortItems(Qt.DescendingOrder)
+        self.listOrders.sortItems(Qt.SortOrder.DescendingOrder)
 
 
 class OrderWrapper:
@@ -300,7 +299,7 @@ class OrderItemWidget(QWidget):
                 "Download order",
                 "This order is already downloaded.\nDownload again?",
             )
-            if ret == QMessageBox.No:
+            if ret == QMessageBox.StandardButton.No:
                 return
 
         self.task = OrderProcessorTask(self.order)
@@ -551,7 +550,7 @@ class QuadsOrderItemWidget(QWidget):
                 "Download order",
                 "This order is already downloaded.\nDownload again?",
             )
-            if ret == QMessageBox.No:
+            if ret == QMessageBox.StandardButton.No:
                 return
 
         self.task = QuadsOrderProcessorTask(self.order)
@@ -576,10 +575,10 @@ def _get_widget_instance():
             return None
         dockwidget_instance = PlanetOrdersMonitorDockWidget(parent=iface.mainWindow())
         dockwidget_instance.setAllowedAreas(
-            Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea
+            Qt.DockWidgetArea.LeftDockWidgetArea | Qt.DockWidgetArea.RightDockWidgetArea
         )
 
-        iface.addDockWidget(Qt.LeftDockWidgetArea, dockwidget_instance)
+        iface.addDockWidget(Qt.DockWidgetArea.LeftDockWidgetArea, dockwidget_instance)
 
         dockwidget_instance.hide()
     return dockwidget_instance

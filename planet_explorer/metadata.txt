@@ -6,12 +6,14 @@
 [general]
 name=Planet_Explorer
 qgisMinimumVersion=3.10
-description=The Planet Plugin enables QGIS users to quickly discover, stream, and download Planet imagery and Planet Basemaps. The plug-in provides an imagery discovery interface that allows users to search for, stream, and download Planet imagery within QGIS.<br><br>Full documentation for the Plugin is available <a href="https://developers.planet.com/docs/integrations/qgis/">here</a>.
-version=2.3.5
+qgisMaximumVersion=4.99
+supportsQt6=true
+description=The Planet Plugin enables QGIS users to quickly discover, stream, and download Planet imagery and Planet Basemaps. The plug-in provides an imagery discovery interface that allows users to search for, stream, and download Planet imagery within QGIS. Compatible with both Qt5 and Qt6.<br><br>Full documentation for the Plugin is available <a href="https://developers.planet.com/docs/integrations/qgis/">here</a>.
+version=2.3.6
 author=Planet Inc
 email=support@planet.com
 
-about=Planet Explorer accesses the Planet imagery catalog archive. PYTHON 3.6 MINIMUM REQUIRED
+about=Planet Explorer accesses the Planet imagery catalog archive. PYTHON 3.6 MINIMUM REQUIRED. Qt6 compatible.
 
 tracker=https://github.com/planetlabs/qgis-planet-plugin/issues
 repository=https://github.com/planetlabs/qgis-planet-plugin
@@ -22,6 +24,8 @@ repository=https://github.com/planetlabs/qgis-planet-plugin
 hasProcessingProvider=no
 # Uncomment the following line and add your changelog:
 changelog=
+  v2.3.6 (2025-10-06)
+  * Added Qt6 compatibility - Updated Qt enums, removed deprecated QString signal signatures, and ensured compatibility with both Qt5 and Qt6
   v2.3.5 (2025-06-18)
   * Support DefaultProxy type
   v2.3.4 (2024-07-11)

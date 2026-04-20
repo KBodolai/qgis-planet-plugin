@@ -122,12 +122,12 @@ class OpenSavedSearchDialog(BASE, WIDGET):
             tokens = []
             gte = filters[0]["config"].get("gte")
             if gte is not None:
-                tokens.append(QDateTime.fromString(gte, Qt.ISODate).date().toString())
+                tokens.append(QDateTime.fromString(gte, Qt.DateFormat.ISODate).date().toString())
             else:
                 tokens.append("---")
             lte = filters[0]["config"].get("lte")
             if lte is not None:
-                tokens.append(QDateTime.fromString(lte, Qt.ISODate).date().toString())
+                tokens.append(QDateTime.fromString(lte, Qt.DateFormat.ISODate).date().toString())
             else:
                 tokens.append("---")
             self.labelDateRange.setText(" / ".join(tokens))

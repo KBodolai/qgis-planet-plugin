@@ -188,16 +188,10 @@ log = logging.getLogger(__name__)
 
 plugin_path = os.path.split(os.path.dirname(__file__))[0]
 AOI_FILTER_WIDGET, AOI_FILTER_BASE = uic.loadUiType(
-    os.path.join(plugin_path, "ui", "pe_aoi_filter_base.ui"),
-    from_imports=True,
-    import_from=f"{os.path.basename(plugin_path)}",
-    resource_suffix="",
+    os.path.join(plugin_path, "ui", "pe_aoi_filter_base.ui")
 )
 DAILY_WIDGET, DAILY_BASE = uic.loadUiType(
-    os.path.join(plugin_path, "ui", "pe_daily_filter_base.ui"),
-    from_imports=True,
-    import_from=f"{os.path.basename(plugin_path)}",
-    resource_suffix="",
+    os.path.join(plugin_path, "ui", "pe_daily_filter_base.ui")
 )
 
 
@@ -317,14 +311,14 @@ class PlanetAOIFilter(AOI_FILTER_BASE, AOI_FILTER_WIDGET, PlanetFilterMixin):
         self._aoi_box.setFillColor(QColor(0, 0, 0, 0))
         self._aoi_box.setStrokeColor(color)
         self._aoi_box.setWidth(3)
-        self._aoi_box.setLineStyle(Qt.DashLine)
+        self._aoi_box.setLineStyle(Qt.PenStyle.DashLine)
 
         self._canvas: QgsMapCanvas = iface.mapCanvas()
         # This may later be a nullptr, if no active tool when queried
         self._cur_maptool = None
 
-        self.leAOI.textChanged["QString"].connect(self.filters_changed)
-        self.leAOI.textEdited["QString"].connect(self.validate_edited_aoi)
+        self.leAOI.textChanged.connect(self.filters_changed)
+        self.leAOI.textEdited.connect(self.validate_edited_aoi)
 
         self._setup_tool_buttons()
 
@@ -376,7 +370,7 @@ class PlanetAOIFilter(AOI_FILTER_BASE, AOI_FILTER_WIDGET, PlanetFilterMixin):
             self.leAOI.setText("")
         self.emitFiltersChanged = True
 
-    @pyqtSlot("QString")
+    @pyqtSlot(str)
     def filters_changed(self, value):
         if self.emitFiltersChanged:
             self.filtersChanged.emit()
@@ -1223,9 +1217,9 @@ class PlanetDailyFilter(DAILY_BASE, DAILY_WIDGET, PlanetFilterMixin):
         dates = self.frameDates.findChildren(QgsDateTimeEdit)
         for date in dates:
             if date.dateTime().isNull():
-                date.lineEdit().setEchoMode(QLineEdit.NoEcho)
+                date.lineEdit().setEchoMode(QLineEdit.EchoMode.NoEcho)
             else:
-                date.lineEdit().setEchoMode(QLineEdit.Normal)
+                date.lineEdit().setEchoMode(QLineEdit.EchoMode.Normal)
 
     def filters(self):
         populated_filters = []
@@ -1236,10 +1230,10 @@ class PlanetDailyFilter(DAILY_BASE, DAILY_WIDGET, PlanetFilterMixin):
         end_date = None
         if not self.startDateEdit.dateTime().isNull():
             start_qdate = self.startDateEdit.date()
-            start_date = start_qdate.toString(Qt.ISODate)
+            start_date = start_qdate.toString(Qt.DateFormat.ISODate)
         if not self.endDateEdit.dateTime().isNull():
             end_qdate = self.endDateEdit.date().addDays(1)
-            end_date = end_qdate.toString(Qt.ISODate)
+            end_date = end_qdate.toString(Qt.DateFormat.ISODate)
 
         if start_qdate and end_qdate:
             if start_qdate < end_qdate:
@@ -1387,10 +1381,10 @@ class PlanetDailyFilter(DAILY_BASE, DAILY_WIDGET, PlanetFilterMixin):
         if filters:
             gte = filters[0]["config"].get("gte")
             if gte is not None:
-                self.startDateEdit.setDateTime(QDateTime.fromString(gte, Qt.ISODate))
+                self.startDateEdit.setDateTime(QDateTime.fromString(gte, Qt.DateFormat.ISODate))
             lte = filters[0]["config"].get("lte")
             if lte is not None:
-                self.endDateEdit.setDateTime(QDateTime.fromString(lte, Qt.ISODate))
+                self.endDateEdit.setDateTime(QDateTime.fromString(lte, Qt.DateFormat.ISODate))
         sliders = self.frameRangeSliders.findChildren(PlanetExplorerRangeSlider)
         for slider in sliders:
             filters = filters_from_request(request, slider.filter_key)

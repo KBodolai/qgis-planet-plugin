@@ -514,8 +514,10 @@ def add_mosaics_to_qgis_project(
     layer.setCustomProperty("embeddedWidgets/count", 1)
     layer.setCustomProperty("embeddedWidgets/0/id", WIDGET_PROVIDER_NAME)
     view = iface.layerTreeView()
-    view.layerTreeModel().refreshLayerLegend(view.currentNode())
-    view.currentNode().setExpanded(True)
+    current_node = view.currentNode()
+    if current_node is not None:
+        view.layerTreeModel().refreshLayerLegend(current_node)
+        current_node.setExpanded(True)
     if add_xyz_server:
         s = QSettings()
         s.setValue(f"qgis/connections-xyz/{name}/zmin", zmin)

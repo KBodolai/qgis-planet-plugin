@@ -106,10 +106,7 @@ log = logging.getLogger(__name__)
 LOG_VERBOSE = os.environ.get("PYTHON_LOG_VERBOSE", None)
 
 RESULTS_WIDGET, RESULTS_BASE = uic.loadUiType(
-    os.path.join(plugin_path, "ui", "pe_search_results_base.ui"),
-    from_imports=True,
-    import_from=f"{os.path.basename(plugin_path)}",
-    resource_suffix="",
+    os.path.join(plugin_path, "ui", "pe_search_results_base.ui")
 )
 
 
@@ -179,7 +176,7 @@ class DailyImagesSearchResultsWidget(RESULTS_BASE, RESULTS_WIDGET):
 
     def _open_settings(self):
         dlg = ResultsConfigurationDialog(self._metadata_to_show)
-        if dlg.exec_():
+        if dlg.exec():
             self._metadata_to_show = dlg.selection
             self.update_image_items()
 
@@ -203,7 +200,7 @@ class DailyImagesSearchResultsWidget(RESULTS_BASE, RESULTS_WIDGET):
 
     def _save_search(self, dlg=None):
         dlg = dlg if dlg else SaveSearchDialog(self._request)
-        if dlg.exec_():
+        if dlg.exec():
             self._p_client.create_search(dlg.request_to_save)
             analytics_track(SAVED_SEARCH_CREATED)
 
@@ -290,7 +287,7 @@ class DailyImagesSearchResultsWidget(RESULTS_BASE, RESULTS_WIDGET):
                     satellite_widget = self.tree.itemWidget(satellite_item, 0)
                     satellite_widget.update_for_children()
                     satellite_widget.update_thumbnail()
-                    satellite_item.sortChildren(0, Qt.AscendingOrder)
+                    satellite_item.sortChildren(0, Qt.SortOrder.AscendingOrder)
                 date_widget.update_for_children()
                 date_widget.update_thumbnail()
             self.item_count_changed()
@@ -382,7 +379,7 @@ class DailyImagesSearchResultsWidget(RESULTS_BASE, RESULTS_WIDGET):
         self._aoi_box.setFillColor(QColor(0, 0, 0, 0))
         self._aoi_box.setStrokeColor(SEARCH_AOI_COLOR)
         self._aoi_box.setWidth(2)
-        self._aoi_box.setLineStyle(Qt.DashLine)
+        self._aoi_box.setLineStyle(Qt.PenStyle.DashLine)
 
     @pyqtSlot()
     def clear_aoi_box(self):
@@ -444,7 +441,7 @@ class ItemWidgetBase(QFrame):
         layout.addWidget(self.lockLabel)
         pixmap = QPixmap(PLACEHOLDER_THUMB, "SVG")
         self.thumbnail = None
-        thumb = pixmap.scaled(48, 48, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+        thumb = pixmap.scaled(48, 48, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation)
         self.iconLabel.setPixmap(thumb)
         self.iconLabel.setFixedSize(48, 48)
         layout.addWidget(self.iconLabel)
@@ -464,13 +461,13 @@ class ItemWidgetBase(QFrame):
     def set_thumbnail(self, img):
         self.thumbnail = QPixmap(img)
         thumb = self.thumbnail.scaled(
-            48, 48, Qt.KeepAspectRatio, Qt.SmoothTransformation
+            48, 48, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation
         )
         self.iconLabel.setPixmap(thumb)
         self.thumbnailChanged.emit()
 
     def is_selected(self):
-        return self.checkBox.checkState() == Qt.Checked
+        return self.checkBox.checkState() == Qt.CheckState.Checked
 
     def _geom_bbox_in_project_crs(self):
         transform = QgsCoordinateTransform(
@@ -547,13 +544,13 @@ class ItemWidgetBase(QFrame):
                 selected += 1
         if selected == total:
             self.checkBox.setTristate(False)
-            self.checkBox.setCheckState(Qt.Checked)
+            self.checkBox.setCheckState(Qt.CheckState.Checked)
         elif selected == 0:
             self.checkBox.setTristate(False)
-            self.checkBox.setCheckState(Qt.Unchecked)
+            self.checkBox.setCheckState(Qt.CheckState.Unchecked)
         else:
             self.checkBox.setTristate(True)
-            self.checkBox.setCheckState(Qt.PartiallyChecked)
+            self.checkBox.setCheckState(Qt.CheckState.PartiallyChecked)
 
     def set_checked(self, checked):
         self.checkBox.setChecked(checked)
@@ -564,7 +561,7 @@ class ItemWidgetBase(QFrame):
         if thumbnails and None not in thumbnails:
             bboxes = [img[GEOMETRY] for img in self.item.images()]
             pixmap = createCompoundThumbnail(bboxes, thumbnails)
-            thumb = pixmap.scaled(48, 48, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+            thumb = pixmap.scaled(48, 48, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation)
             self.iconLabel.setPixmap(thumb)
             self.thumbnailChanged.emit()
 
